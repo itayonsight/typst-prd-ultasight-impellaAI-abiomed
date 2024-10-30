@@ -181,13 +181,10 @@ The requirements should cover all positive flows and add any negative flow you c
   - *Acceptability Definition*: A prediction is considered acceptable if it meets both visibility and stability criteria, supporting reliable identification.
   - *Negative Flow Handling*: If the acceptability criteria are not met, structures will not be marked.
 
-- *Clip/Frame Saving*:
+  
+- *Clip Saving*:
   - *General Functionality*: Users operate the ultrasound's inherent capabilities to record clips or freeze frames.
-  - *Freeze Mode*: Users can freeze images, scroll through frames, and use ultrasound inherent calipers to perform manual annotations and measurements. Users have the option to show/hide/edit or discard AI-generated measurements. Users can export a single image to disk, an additional DICOM file will be automatically generated. Upon triggering a measurement or annotation, a pop-up will prompt the user to confirm if they want to hide the AI identifications, as AI overlays must be removed to proceed with manual measurements.
-  - *Clip Recording Mode*: User saves a clip for clinical evaluation.
-  - *Export Functionality*: Users can export both frozen images and recorded clips directly to a local folder during the scanning process.
-  - *Negative Flow*: If a freeze results in a timeframe too short for reliable identification, no identifications are displayed, and a prompt advises extending the duration.
-  - *Configuration Check*: Users must verify the proper configuration of the export destination to ensure accurate functionality.
+  - *Configuration prerequisite*: Users must verify the proper configuration of the export destination to ensure accurate functionality.
 
 - *Measurement*:
   - *Overview*: Evaluates saved clips for acceptability. Identifications are applied across the clip.
@@ -200,7 +197,7 @@ The requirements should cover all positive flows and add any negative flow you c
 - *Review*:
   - *Overview*: Provides a list of all clips and still images captured during an exam, displaying measurements or indicating ‘N/A’ for unacceptable clips with explanations for their unacceptability. Also enables access to other exams stored on the device.
   - *AI Interactions*:
-    - *Discarding AI Results*: Users may discard AI results. This event should be written in the dcm.
+    - *Discarding AI Results*: Users may discard AI results. This event should be written in the DICOM file.
     - *AI Re-Analysis*: Users may present the analysis on clips where AI results have previously been discarded.
   - *Functionalities*:
       - *Clip and Frame Review*: Displays identifications and measurements for acceptable clips and frames.
@@ -210,6 +207,9 @@ The requirements should cover all positive flows and add any negative flow you c
       - *Export*: Exports modifications and manual annotations; external exports require PHI scrubbing.
   - *Negative Flow Handling*: If clips are unacceptable, AI data isn't shown, but the clips and frames remain accessible.
 
+- *Freeze Mode*: 
+  - *Functionality*: Users can freeze images, scroll through frames, and use ultrasound inherent calipers to perform manual annotations and measurements. Users have the option to show/hide  or discard AI-generated measurements. Upon triggering a manual measurement or annotation, a pop-up will prompt the user to confirm if they want to hide the AI identifications, as AI overlays must be removed to proceed with manual measurements.
+  
 - *End-Exam Feature*:
   - *Functionality*: Located within the ultrasound interface, this button finalizes the scanning session, ensuring all data is properly saved and archived. It is recommended for activation after the review phase or upon the user's decision to conclude a session.
 
@@ -490,65 +490,67 @@ The app will come pre-installed with a basic license. A license manager will be 
 
 The KPIs section outlines the key performance indicators that will be used to measure the success and impact of the #useg system. The KPIs focus on the most important aspects that drive adoption and demonstrate the value of the system to Abiomed and its customers.
 
-+ *Quality - AI Measurement Accuracy*
++ *Quality - AI Measurement Accuracy and Landmark Distance Measurement*
+  - *Definition*: Measures the system's ability to successfully identify anatomical landmarks and accurately measure the distance between them during scans. For this KPI, only acceptable quality PLAX clips are included. 10% of the scans accepted by the software are randomly selected for expert review. The KPI measures the percentage of AI-generated measurements that are agreed upon by a central (UltraSight) expert, within a defined acceptable range of variability.
 
-    - *Definition*: 5% of scans with measurements are randomly selected for review. The KPI measures the percentage of AI-generated measurements that are agreed upon by a central (UltraSight)  cardiologist, within a defined acceptable range of variability.
+  - *Target*: 
+      - The system should successfully measure the distance between landmarks in more than 80% of applicable exams.
+      - AI-generated measurements should be agreed upon by the central (UltraSight) expert(s) at least 80% of the time.
+      - The time from scan start to successful measurement of the distance between landmarks should be minimal, targeting less than 20 minutes in 80% of cases.
 
-    - *Target*: AI-generated measurements should be agreed upon by the central (UltraSight) cardiologist at least 80% of the time, with variability within the specified range.
+  - *Requirement*: 
+      - Ensure that only acceptable quality PLAX clips are included in this KPI.
+      - Abiomed to share all relevant scans uploaded to the Abiomed cloud with the UltraSight cloud for expert review.
 
-    - *Requirement*: Abiomed to share all scans uploaded to the Abiomed cloud with the UltraSight cloud.
-
-    - *Reasoning*: This KPI ensures that the #useg's measurements are consistently accurate and validated by expert cardiologists, enhancing trust in the technology. Sharing this data with end users helps build confidence in the AI, assuring them that it meets high clinical standards and supports accurate decision-making.
-
-+ *Quality – Ability to Measure the Distance Between Landmarks*
-
-    - *Definition*: Measures the system's ability to successfully identify and measure the distance between anatomical landmarks during scans.
-
-     *Target*: The system should successfully measure the distance between landmarks in more than 80% of applicable exams.
-
-    - *Requirement*: Ensure that scans not intended for Abiomed are excluded from this KPI.
-
-    - *Reasoning*: This KPI ensures the AI's functionality is reliable in measuring key anatomical distances, which is critical for procedural accuracy and clinical decision-making.
+  - *Reasoning*: This KPI ensures that the AI's functionality is reliable in identifying key anatomical landmarks and measuring distances accurately, which is critical for procedural accuracy and clinical decision-making. Including expert validation of 10% of accepted cases enhances trust in the technology. Measuring the time from scan start to measurement emphasizes efficiency and usability in clinical settings.
 
 + *Quality - System Downtime*
 
-    - *Definition*: Tracks the percentage of time the UltraSight system is operational and available for use.
+  - *Definition*: Tracks the percentage of time the UltraSight system is operational and available for use.
 
-    - *Target*: System downtime should be less than 10%, ensuring over 90% system availability.
+  - *Target*: System downtime should be less than 10%, ensuring over 90% system availability.
 
-    - *Reasoning*: Maintaining a high level of system uptime is critical for supporting continuous clinical operations and minimizing disruptions in patient care.
+  - *Reasoning*: Maintaining a high level of system uptime is critical for supporting continuous clinical operations and minimizing disruptions in patient care.
 
 + *Quality - Training Time for New Users*
 
-    - *Definition*: Measures the average time required for new users to become proficient in using the UltraSight system.
+  - *Definition*: Measures the average time required for new users to become proficient in using the UltraSight system.
 
-    - *Target*: The average training time for new users should be less than 1 month from start training to competency.
+  - *Target*: The average training time for new users should be less than 1 month from start of training to competency.
 
-    - *Requirement*: Implement effective training programs and user-friendly interfaces to facilitate quick onboarding.
+  - *Requirement*: Implement effective training programs and user-friendly interfaces to facilitate quick onboarding.
 
-    - *Reasoning*: This KPI ensures that the system is user-friendly and that onboarding processes are efficient, minimizing training costs and allowing users to begin using the system effectively in a shorter time frame. Reducing training time can increase user adoption rates and overall satisfaction.
+  - *Reasoning*: This KPI ensures that the system is user-friendly and that onboarding processes are efficient, minimizing training costs and allowing users to begin using the system effectively in a shorter time frame. Reducing training time can increase user adoption rates and overall satisfaction.
 
 + *Value - User Satisfaction (Net Promoter Score)*
 
-    - *Definition*: Measures overall user satisfaction with the UltraSight system using the Net Promoter Score (NPS) methodology.
+  - *Definition*: Measures overall user satisfaction with the UltraSight system using the Net Promoter Score (NPS) methodology.
 
-    - *Target*: Achieve an NPS score of 60 or higher.
+  - *Target*: Achieve an NPS score of 60 or higher.
 
-    - *Requirement*: Conduct regular user satisfaction surveys and analyze feedback to identify areas for improvement.
+  - *Requirement*: Conduct regular user satisfaction surveys and analyze feedback to identify areas for improvement.
 
-    - *Reasoning*: This KPI gauges overall user satisfaction and loyalty, providing insights into users' willingness to recommend the system to others. It helps identify strengths and areas needing improvement, guiding enhancements to the user experience and fostering user engagement.
+  - *Reasoning*: This KPI gauges overall user satisfaction and loyalty, providing insights into users' willingness to recommend the system to others. It helps identify strengths and areas needing improvement, guiding enhancements to the user experience and fostering user engagement.
 
 + *Value – Position Alarm to Scan Start Time*
 
-    - *Definition*: Measures the time between when a position alarm is triggered and when the scan is initiated.
+  - *Definition*: Measures the time between when a position alarm is triggered and when the scan is initiated.
 
-    - *Target*: The time from position alarm to scan initiation should be less than 15 minutes in 80% of cases.
+  - *Target*: The time from position alarm to scan initiation should be less than 15 minutes in 80% of cases.
 
-    - *Requirement*: Abiomed is required to share alarm data with UltraSight via cloud integration to track and analyze this KPI.
+  - *Requirement*: Abiomed is required to share alarm data with UltraSight via cloud integration to track and analyze this KPI.
 
-    - *Reasoning*: This metric serves as a proxy for assuming that UltraSight enables a shorter time from alarm to repositioning, without directly measuring the repositioning time. By focusing on scan initiation, the process indirectly supports faster clinical response to position alarms.
+  - *Reasoning*: This metric serves as a proxy for assuming that UltraSight enables a shorter time from alarm to repositioning, without directly measuring the repositioning time. By focusing on scan initiation, the process indirectly supports faster clinical response to position alarms.
 
++ *Value – P-Level Reduction Duration*
 
+  - *Definition*: Monitors the duration of time the pump's performance level (P-level) is reduced in response to position alarms. Clinicians often reduce the P-level until the issue is resolved, frequently due to limited access to echocardiography.
+
+  - *Target*: The duration of P-level reduction should be minimized, aiming for restoration to optimal levels within 1 hour in 80% of cases.
+
+  - *Requirement*: Abiomed to share P-level adjustment data along alarm data with UltraSight via cloud integration to track and analyze this KPI.
+
+  - *Reasoning*: Reducing the duration of P-level reduction minimizes the time the patient receives suboptimal circulatory support. By providing better access to echocardiography through UltraSight, clinicians can resolve issues more quickly without unnecessarily lowering the P-level, improving patient outcomes.
 
 
 
